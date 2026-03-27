@@ -1,0 +1,1611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MenuMate AI — Turn Your Menu Into a Website</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --cream:#fdf6ec;
+  --cream2:#f7eddc;
+  --amber:#c8860a;
+  --amber-light:#e8a020;
+  --amber-pale:#fef3e0;
+  --brown:#3d2b1f;
+  --brown-mid:#6b4226;
+  --brown-light:#a0674a;
+  --charcoal:#1a1208;
+  --white:#ffffff;
+  --gray-warm:#8a7560;
+  --gray-pale:#e8ddd0;
+  --green-herb:#4a6741;
+  --red-chili:#b83232;
+  --radius:10px;
+  --radius-lg:18px;
+  --radius-xl:28px;
+}
+
+html{scroll-behavior:smooth}
+
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--cream);
+  color:var(--brown);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── TEXTURE OVERLAY ── */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:0.6;
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 40px;
+  background:rgba(253,246,236,0.93);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--gray-pale);
+}
+
+.nav-logo{
+  display:flex;align-items:center;gap:10px;
+  text-decoration:none;
+}
+
+.nav-logo-icon{
+  width:38px;height:38px;
+  background:var(--brown);
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;
+}
+
+.nav-logo-text{
+  font-family:'Playfair Display',serif;
+  font-size:20px;font-weight:700;
+  color:var(--brown);
+  letter-spacing:-0.3px;
+}
+
+.nav-logo-text span{color:var(--amber);}
+
+.nav-tagline{
+  font-size:12px;
+  color:var(--gray-warm);
+  background:var(--amber-pale);
+  border:1px solid #e8c97a;
+  padding:5px 14px;
+  border-radius:20px;
+  font-weight:500;
+}
+
+/* ── HERO SECTION ── */
+#home-screen{position:relative;z-index:1;}
+
+.hero-bg{
+  position:relative;
+  overflow:hidden;
+  padding:130px 24px 0;
+  text-align:center;
+}
+
+/* Decorative top border */
+.hero-border{
+  position:absolute;top:70px;left:0;right:0;
+  height:4px;
+  background:repeating-linear-gradient(90deg,var(--amber) 0,var(--amber) 20px,transparent 20px,transparent 28px);
+  opacity:0.4;
+}
+
+/* SVG Illustration - Steam cups */
+.hero-illustration{
+  position:relative;
+  display:flex;justify-content:center;
+  margin-bottom:12px;
+}
+
+.steam-scene{
+  width:min(500px,90vw);
+  height:180px;
+}
+
+/* Floating food emojis background */
+.food-float{
+  position:absolute;
+  font-size:22px;
+  opacity:0.12;
+  animation:floatFade 8s ease-in-out infinite;
+  pointer-events:none;
+  user-select:none;
+}
+
+@keyframes floatFade{
+  0%,100%{transform:translateY(0) rotate(0deg);opacity:0.1;}
+  50%{transform:translateY(-18px) rotate(8deg);opacity:0.18;}
+}
+
+.eyebrow-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:13px;font-weight:500;
+  color:var(--brown-mid);
+  background:var(--amber-pale);
+  border:1px solid #e5c06a;
+  padding:7px 18px;
+  border-radius:20px;
+  margin-bottom:28px;
+}
+
+.eyebrow-tag .dot{
+  width:7px;height:7px;
+  background:var(--amber);
+  border-radius:50%;
+  animation:pulse 2s infinite;
+}
+
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.8);}}
+
+h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(38px,5.5vw,76px);
+  font-weight:900;
+  line-height:1.06;
+  letter-spacing:-2px;
+  color:var(--brown);
+  margin-bottom:8px;
+}
+
+h1 em{
+  font-style:italic;
+  color:var(--amber);
+}
+
+.h1-sub{
+  font-family:'Lora',serif;
+  font-size:clamp(16px,2vw,21px);
+  color:var(--gray-warm);
+  font-weight:400;
+  font-style:italic;
+  margin-bottom:48px;
+  line-height:1.5;
+}
+
+/* ── UPLOAD ZONE ── */
+.upload-wrapper{
+  max-width:660px;
+  margin:0 auto;
+  padding:0 20px 80px;
+  position:relative;z-index:1;
+}
+
+.upload-box{
+  border:2px dashed #d4b07a;
+  border-radius:var(--radius-xl);
+  padding:52px 36px;
+  text-align:center;
+  background:var(--white);
+  cursor:pointer;
+  transition:all 0.25s ease;
+  position:relative;
+  overflow:hidden;
+}
+
+.upload-box::before{
+  content:'';
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(200,134,10,0.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+
+.upload-box:hover,.upload-box.drag-over{
+  border-color:var(--amber);
+  background:var(--amber-pale);
+  transform:translateY(-2px);
+  box-shadow:0 12px 40px rgba(200,134,10,0.15);
+}
+
+.upload-plate{
+  width:80px;height:80px;
+  background:var(--cream2);
+  border:2px solid var(--gray-pale);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 22px;
+  font-size:36px;
+  transition:all 0.3s;
+  position:relative;
+}
+
+.upload-box:hover .upload-plate{
+  background:var(--amber-pale);
+  border-color:var(--amber);
+  transform:scale(1.08) rotate(-4deg);
+}
+
+.upload-title{
+  font-family:'Playfair Display',serif;
+  font-size:22px;font-weight:700;
+  color:var(--brown);
+  margin-bottom:8px;
+}
+
+.upload-sub{
+  font-size:14px;
+  color:var(--gray-warm);
+  margin-bottom:28px;
+  line-height:1.6;
+}
+
+.upload-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--brown);
+  color:var(--white);
+  padding:14px 28px;
+  border-radius:var(--radius-lg);
+  font-size:15px;font-weight:600;
+  cursor:pointer;border:none;
+  transition:all 0.2s;
+  font-family:'DM Sans',sans-serif;
+  letter-spacing:0.2px;
+}
+
+.upload-btn:hover{
+  background:var(--brown-mid);
+  transform:translateY(-1px);
+  box-shadow:0 6px 20px rgba(61,43,31,0.25);
+}
+
+.file-hint{
+  margin-top:18px;
+  font-size:12px;
+  color:var(--gray-warm);
+  display:flex;align-items:center;justify-content:center;gap:16px;
+  flex-wrap:wrap;
+}
+
+.file-hint-item{
+  display:flex;align-items:center;gap:4px;
+}
+
+#file-input{display:none;}
+
+/* ── FEATURES STRIP ── */
+.features-strip{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:10px;
+  padding:0 24px 64px;
+  max-width:780px;margin:0 auto;
+  position:relative;z-index:1;
+}
+
+.feature-pill{
+  display:flex;align-items:center;gap:7px;
+  background:var(--white);
+  border:1px solid var(--gray-pale);
+  padding:9px 16px;border-radius:20px;
+  font-size:13px;color:var(--brown-mid);font-weight:500;
+  transition:all 0.2s;
+}
+
+.feature-pill:hover{border-color:var(--amber);background:var(--amber-pale);}
+.feature-pill .ficon{font-size:15px;}
+
+/* ── HOW IT WORKS ── */
+.how-section{
+  background:var(--brown);
+  padding:64px 24px;
+  position:relative;z-index:1;
+  text-align:center;
+}
+
+.how-section::before{
+  content:'';
+  position:absolute;top:0;left:0;right:0;
+  height:3px;
+  background:repeating-linear-gradient(90deg,var(--amber) 0,var(--amber) 16px,transparent 16px,transparent 24px);
+}
+
+.how-title{
+  font-family:'Playfair Display',serif;
+  font-size:32px;font-weight:700;font-style:italic;
+  color:var(--cream);
+  margin-bottom:48px;
+}
+
+.how-steps{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:32px;max-width:860px;margin:0 auto;
+}
+
+.how-step{text-align:center;}
+
+.step-num{
+  width:52px;height:52px;
+  background:var(--amber);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;
+  font-size:22px;font-weight:900;
+  color:var(--brown);
+  margin:0 auto 16px;
+}
+
+.step-title{
+  font-size:15px;font-weight:600;
+  color:var(--cream);margin-bottom:6px;
+}
+
+.step-desc{font-size:13px;color:rgba(253,246,236,0.6);line-height:1.5;}
+
+/* ── PROCESSING SCREEN ── */
+#processing-screen{
+  display:none;
+  position:fixed;inset:0;
+  background:var(--cream);
+  z-index:200;
+  flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:32px;
+}
+
+.proc-icon{
+  font-size:64px;
+  margin-bottom:24px;
+  animation:sway 2s ease-in-out infinite;
+}
+
+@keyframes sway{0%,100%{transform:rotate(-5deg);}50%{transform:rotate(5deg);}}
+
+.proc-ring{
+  width:64px;height:64px;
+  border:3px solid var(--gray-pale);
+  border-top-color:var(--amber);
+  border-radius:50%;
+  animation:spin 0.8s linear infinite;
+  position:absolute;top:-8px;left:-8px;
+  width:80px;height:80px;
+}
+
+.proc-icon-wrap{position:relative;width:64px;height:64px;margin:0 auto 32px;}
+.proc-icon-inner{font-size:40px;line-height:64px;}
+
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.proc-title{
+  font-family:'Playfair Display',serif;
+  font-size:26px;font-weight:700;
+  color:var(--brown);margin-bottom:10px;
+}
+
+.proc-sub{font-size:15px;color:var(--gray-warm);max-width:340px;line-height:1.6;}
+
+.proc-steps{
+  margin-top:40px;
+  display:flex;flex-direction:column;gap:10px;
+  text-align:left;width:100%;max-width:300px;
+}
+
+.step-row{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 16px;border-radius:var(--radius);
+  background:var(--white);border:1px solid var(--gray-pale);
+  font-size:14px;color:var(--gray-warm);
+  transition:all 0.3s ease;
+}
+
+.step-row.active{
+  background:var(--brown);color:var(--cream);
+  border-color:var(--brown);
+}
+
+.step-row.done{
+  background:#f0fdf4;color:#166534;
+  border-color:#bbf7d0;
+}
+
+.step-row .sicon{font-size:16px;flex-shrink:0;}
+
+/* ── RESULT SCREEN ── */
+#result-screen{display:none;min-height:100vh;padding-top:70px;}
+
+.result-topbar{
+  background:var(--brown);
+  padding:14px 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;
+  border-bottom:3px solid var(--amber);
+}
+
+.rtb-left{display:flex;align-items:center;gap:12px;}
+
+.rtb-badge{
+  font-size:11px;font-weight:600;
+  background:rgba(200,134,10,0.25);
+  color:var(--amber-light);
+  padding:4px 12px;border-radius:20px;
+  border:1px solid rgba(200,134,10,0.4);
+  letter-spacing:0.5px;
+}
+
+.rtb-name{
+  font-family:'Playfair Display',serif;
+  font-size:17px;font-weight:700;
+  color:var(--cream);
+}
+
+.rtb-actions{display:flex;gap:10px;}
+
+.btn-ghost-cream{
+  background:transparent;color:var(--cream);
+  border:1px solid rgba(253,246,236,0.3);
+  padding:8px 16px;border-radius:var(--radius);
+  font-size:13px;font-weight:500;cursor:pointer;
+  transition:all 0.2s;font-family:'DM Sans',sans-serif;
+}
+
+.btn-ghost-cream:hover{background:rgba(253,246,236,0.1);}
+
+.btn-amber{
+  background:var(--amber);color:var(--brown);
+  border:none;padding:8px 18px;border-radius:var(--radius);
+  font-size:13px;font-weight:700;cursor:pointer;
+  transition:all 0.2s;font-family:'DM Sans',sans-serif;
+}
+
+.btn-amber:hover{background:var(--amber-light);}
+
+/* ── THEME SWITCHER ── */
+.theme-bar{
+  background:var(--cream2);
+  border-bottom:1px solid var(--gray-pale);
+  padding:10px 24px;
+  display:flex;align-items:center;gap:12px;
+  flex-wrap:wrap;
+}
+
+.theme-label{
+  font-size:12px;font-weight:600;
+  text-transform:uppercase;letter-spacing:1px;
+  color:var(--gray-warm);
+}
+
+.theme-opts{display:flex;gap:8px;}
+
+.theme-btn{
+  display:flex;align-items:center;gap:6px;
+  padding:6px 14px;border-radius:20px;
+  font-size:12px;font-weight:500;cursor:pointer;
+  border:1.5px solid var(--gray-pale);
+  background:var(--white);color:var(--brown-mid);
+  transition:all 0.2s;font-family:'DM Sans',sans-serif;
+}
+
+.theme-btn.active,.theme-btn:hover{
+  border-color:var(--amber);
+  background:var(--amber-pale);
+  color:var(--brown);
+}
+
+.theme-swatch{width:12px;height:12px;border-radius:50%;border:1.5px solid rgba(0,0,0,0.12);}
+
+/* ── SPLIT LAYOUT ── */
+.split-layout{
+  display:grid;grid-template-columns:1fr 1fr;
+  height:calc(100vh - 158px);
+}
+
+@media(max-width:768px){
+  .split-layout{grid-template-columns:1fr;height:auto;}
+}
+
+.split-left{
+  border-right:1px solid var(--gray-pale);
+  overflow-y:auto;padding:24px;
+  background:var(--cream2);
+}
+
+.split-right{overflow-y:auto;background:var(--cream);}
+
+.panel-label{
+  font-size:11px;font-weight:600;letter-spacing:1.2px;
+  text-transform:uppercase;color:var(--gray-warm);
+  margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+
+.panel-label::after{
+  content:'';flex:1;height:1px;
+  background:var(--gray-pale);
+}
+
+.file-preview-box{
+  background:var(--white);
+  border:1px solid var(--gray-pale);
+  border-radius:var(--radius-lg);
+  overflow:hidden;margin-bottom:20px;
+}
+
+.file-preview-box img{width:100%;height:auto;display:block;}
+
+.pdf-preview{
+  padding:48px 24px;text-align:center;background:var(--white);
+}
+
+.pdf-preview .picon{font-size:48px;margin-bottom:12px;}
+.pdf-preview .pname{font-size:13px;font-weight:500;color:var(--gray-warm);word-break:break-all;}
+
+.ocr-box{
+  background:var(--white);border:1px solid var(--gray-pale);
+  border-radius:var(--radius-lg);padding:18px;
+}
+
+.ocr-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:12px;
+}
+
+.ocr-label{
+  font-size:11px;font-weight:600;letter-spacing:1px;
+  text-transform:uppercase;color:var(--gray-warm);
+}
+
+.ocr-badge{
+  font-size:10px;font-weight:600;
+  background:var(--amber-pale);color:var(--amber);
+  border:1px solid #e5c06a;
+  padding:3px 9px;border-radius:20px;
+}
+
+#ocr-text{
+  font-family:'Courier New',monospace;
+  font-size:11.5px;color:var(--gray-warm);
+  white-space:pre-wrap;word-break:break-word;
+  line-height:1.7;max-height:220px;overflow-y:auto;
+}
+
+/* ── LOGO UPLOAD ── */
+.logo-upload-area{
+  background:var(--white);border:1.5px dashed var(--gray-pale);
+  border-radius:var(--radius-lg);padding:16px;
+  text-align:center;cursor:pointer;
+  transition:all 0.2s;margin-bottom:16px;
+}
+
+.logo-upload-area:hover{border-color:var(--amber);background:var(--amber-pale);}
+
+.logo-upload-area.has-logo{border-style:solid;border-color:var(--green-herb);}
+
+#logo-preview{
+  width:64px;height:64px;object-fit:contain;
+  border-radius:8px;display:none;margin:0 auto 8px;
+}
+
+.logo-upload-txt{font-size:13px;color:var(--gray-warm);}
+#logo-file{display:none;}
+
+/* ── PREVIEW PANEL ── */
+.preview-wrap{padding:24px;min-height:100%;}
+
+.preview-label{
+  font-size:11px;font-weight:600;letter-spacing:1.2px;
+  text-transform:uppercase;color:var(--gray-warm);
+  text-align:center;margin-bottom:14px;
+}
+
+.browser-frame{
+  background:var(--white);
+  border-radius:var(--radius-xl);
+  border:1px solid var(--gray-pale);
+  overflow:hidden;
+  box-shadow:0 8px 40px rgba(61,43,31,0.1);
+}
+
+.browser-bar{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 16px;
+  background:var(--cream2);
+  border-bottom:1px solid var(--gray-pale);
+}
+
+.bdot{width:10px;height:10px;border-radius:50%;}
+.bdot.r{background:#ff5f56;}.bdot.y{background:#ffbd2e;}.bdot.g{background:#27c93f;}
+
+.burl{
+  flex:1;background:var(--white);
+  border:1px solid var(--gray-pale);
+  border-radius:6px;padding:4px 12px;
+  font-size:11px;color:var(--gray-warm);
+  font-family:'DM Sans',sans-serif;
+}
+
+#generated-site{font-family:'DM Sans',sans-serif;}
+
+/* ── GENERATED SITE THEMES ── */
+/* Theme: Warm (default) */
+.theme-warm{--st-bg:#fdf6ec;--st-card:#fff;--st-hero-bg:#3d2b1f;--st-hero-txt:#fdf6ec;--st-accent:#c8860a;--st-txt:#3d2b1f;--st-txt2:#8a7560;--st-border:#e8ddd0;}
+/* Theme: Dark */
+.theme-dark{--st-bg:#1a1208;--st-card:#2a1f14;--st-hero-bg:#0d0905;--st-hero-txt:#fdf6ec;--st-accent:#e8a020;--st-txt:#fdf6ec;--st-txt2:#a0926a;--st-border:#3d2b1f;}
+/* Theme: Light */
+.theme-light{--st-bg:#ffffff;--st-card:#f9f9f9;--st-hero-bg:#f0f0f0;--st-hero-txt:#1a1a1a;--st-accent:#c8860a;--st-txt:#1a1a1a;--st-txt2:#666;--st-border:#e0e0e0;}
+
+.gs-hero{
+  background:var(--st-hero-bg);
+  padding:40px 24px 36px;
+  text-align:center;
+  position:relative;overflow:hidden;
+}
+
+.gs-hero::after{
+  content:'';
+  position:absolute;bottom:0;left:0;right:0;height:3px;
+  background:var(--st-accent);
+}
+
+.gs-logo-img{
+  width:70px;height:70px;object-fit:contain;
+  border-radius:12px;margin:0 auto 16px;display:block;
+  background:rgba(255,255,255,0.1);
+  border:2px solid rgba(255,255,255,0.2);
+  padding:4px;
+}
+
+.gs-name{
+  font-family:'Playfair Display',serif;
+  font-size:30px;font-weight:900;
+  color:var(--st-hero-txt);
+  margin-bottom:6px;letter-spacing:-0.5px;
+}
+
+.gs-tagline{
+  font-family:'Lora',serif;
+  font-size:14px;font-style:italic;
+  color:rgba(253,246,236,0.7);
+  margin-bottom:18px;
+}
+
+.gs-contacts{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:10px;
+  font-size:12px;color:rgba(253,246,236,0.65);margin-bottom:20px;
+}
+
+.gs-contact-item{display:flex;align-items:center;gap:4px;}
+
+.gs-wa-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  background:#25D366;color:#fff;
+  padding:11px 22px;border-radius:var(--radius-lg);
+  font-size:14px;font-weight:600;
+  text-decoration:none;cursor:pointer;
+  transition:all 0.2s;
+  border:none;font-family:'DM Sans',sans-serif;
+  margin-top:4px;
+}
+
+.gs-wa-btn:hover{background:#1ebe58;}
+
+.gs-section{
+  padding:28px 20px;
+  background:var(--st-bg);
+  border-top:1px solid var(--st-border);
+}
+
+.gs-sec-title{
+  font-family:'Playfair Display',serif;
+  font-size:11px;font-weight:700;
+  letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--st-txt2);
+  margin-bottom:20px;
+  display:flex;align-items:center;gap:10px;
+}
+
+.gs-sec-title::after{
+  content:'';flex:1;height:1px;background:var(--st-border);
+}
+
+.cat-title{
+  font-family:'Playfair Display',serif;
+  font-size:20px;font-weight:700;
+  color:var(--st-txt);
+  margin-bottom:14px;padding-bottom:8px;
+  border-bottom:2px solid var(--st-accent);
+  display:inline-block;
+}
+
+.items-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:10px;margin-bottom:26px;
+}
+
+@media(max-width:480px){.items-grid{grid-template-columns:1fr;}}
+
+.item-card{
+  background:var(--st-card);
+  border:1px solid var(--st-border);
+  border-radius:var(--radius);padding:13px;
+  transition:all 0.2s;cursor:default;
+}
+
+.item-card:hover{border-color:var(--st-accent);transform:translateY(-1px);}
+
+/* INLINE EDITING */
+[contenteditable]{outline:none;transition:background 0.2s;}
+[contenteditable]:focus{
+  background:rgba(200,134,10,0.08)!important;
+  border-radius:4px;
+  outline:2px solid var(--amber)!important;
+}
+
+.item-name{
+  font-weight:600;font-size:13px;
+  color:var(--st-txt);margin-bottom:3px;
+}
+
+.item-desc{
+  font-size:11.5px;color:var(--st-txt2);
+  margin-bottom:7px;line-height:1.4;
+}
+
+.item-price{
+  font-family:'Playfair Display',serif;
+  font-size:16px;font-weight:700;
+  color:var(--st-accent);
+}
+
+.gs-about-box{
+  background:var(--st-card);
+  border:1px solid var(--st-border);
+  border-radius:var(--radius-lg);
+  padding:18px;font-size:13px;
+  color:var(--st-txt2);line-height:1.7;
+}
+
+.gs-footer{
+  background:var(--st-hero-bg);
+  color:rgba(253,246,236,0.4);
+  text-align:center;padding:20px;
+  font-size:11px;
+  border-top:1px solid rgba(200,134,10,0.3);
+}
+
+.edit-hint{
+  display:flex;align-items:center;gap:6px;
+  font-size:11px;color:var(--amber);
+  background:var(--amber-pale);
+  border:1px solid #e5c06a;
+  border-radius:20px;
+  padding:5px 12px;
+  margin-bottom:16px;
+  width:fit-content;
+}
+
+/* ── PUBLISH SECTION ── */
+.publish-zone{
+  background:var(--brown);
+  padding:48px 24px;text-align:center;
+  border-top:3px solid var(--amber);
+  position:relative;
+}
+
+.publish-zone::before{
+  content:'"Your table is ready online."';
+  font-family:'Lora',serif;
+  font-style:italic;font-size:14px;
+  color:rgba(253,246,236,0.35);
+  display:block;margin-bottom:24px;
+}
+
+.pub-title{
+  font-family:'Playfair Display',serif;
+  font-size:28px;font-weight:700;
+  color:var(--cream);margin-bottom:8px;
+}
+
+.pub-sub{font-size:14px;color:rgba(253,246,236,0.55);margin-bottom:32px;line-height:1.5;}
+
+.pub-plans{
+  display:flex;flex-wrap:wrap;gap:14px;justify-content:center;
+}
+
+.pub-card{
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.15);
+  border-radius:var(--radius-xl);
+  padding:22px 24px;cursor:pointer;
+  transition:all 0.25s;text-align:left;
+  min-width:165px;
+}
+
+.pub-card:hover{
+  background:rgba(255,255,255,0.12);
+  border-color:rgba(200,134,10,0.6);
+  transform:translateY(-3px);
+}
+
+.pub-card.featured{
+  background:var(--amber);
+  border-color:var(--amber);
+}
+
+.pub-card.featured .pcard-name,.pub-card.featured .pcard-price,.pub-card.featured .pcard-features{color:var(--brown);}
+
+.pcard-name{
+  font-family:'Playfair Display',serif;
+  font-size:15px;font-weight:700;
+  color:var(--cream);margin-bottom:2px;
+}
+
+.pcard-price{
+  font-size:24px;font-weight:700;
+  color:var(--cream);margin-bottom:12px;
+  font-family:'Playfair Display',serif;
+}
+
+.pcard-price span{font-size:12px;font-weight:400;opacity:0.6;}
+.pcard-features{font-size:12px;color:rgba(253,246,236,0.6);line-height:1.8;}
+
+/* ── DOWNLOAD BAR ── */
+.dl-bar{
+  background:var(--cream2);
+  border-bottom:1px solid var(--gray-pale);
+  padding:10px 24px;
+  display:flex;align-items:center;gap:12px;
+  flex-wrap:wrap;
+}
+
+.dl-label{font-size:13px;color:var(--gray-warm);flex:1;}
+
+.btn-dl{
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--green-herb);color:var(--white);
+  padding:8px 18px;border-radius:var(--radius);
+  font-size:13px;font-weight:600;cursor:pointer;
+  border:none;transition:all 0.2s;font-family:'DM Sans',sans-serif;
+}
+
+.btn-dl:hover{background:#3a5332;}
+
+/* ── TOAST ── */
+#toast{
+  position:fixed;bottom:28px;left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:var(--brown);color:var(--cream);
+  padding:13px 22px;border-radius:var(--radius-lg);
+  font-size:14px;font-weight:500;z-index:500;
+  transition:transform 0.3s ease;
+  white-space:nowrap;
+  border:1px solid var(--amber);
+  box-shadow:0 8px 24px rgba(0,0,0,0.2);
+}
+
+#toast.show{transform:translateX(-50%) translateY(0);}
+
+/* ── SCROLL ANIMS ── */
+.fade-up{opacity:0;transform:translateY(24px);transition:all 0.55s ease;}
+.fade-up.visible{opacity:1;transform:translateY(0);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  nav{padding:12px 16px;}
+  .nav-tagline{display:none;}
+  .hero-bg{padding:100px 16px 0;}
+  h1{letter-spacing:-1px;}
+  .split-left{border-right:none;border-bottom:1px solid var(--gray-pale);}
+  .rtb-actions .btn-ghost-cream{display:none;}
+}
+
+/* ── API KEY BANNER ── */
+#api-key-banner{
+  position:fixed;top:0;left:0;right:0;bottom:0;z-index:999;
+  background:rgba(26,18,8,0.82);backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;padding:24px;
+}
+.apikey-card{
+  background:var(--cream);border-radius:var(--radius-xl);
+  padding:40px 36px;max-width:480px;width:100%;
+  box-shadow:0 24px 64px rgba(0,0,0,0.35);
+  border:1px solid var(--gray-pale);
+  text-align:center;
+}
+.apikey-icon{font-size:48px;margin-bottom:16px;}
+.apikey-title{
+  font-family:'Playfair Display',serif;
+  font-size:24px;font-weight:700;color:var(--brown);margin-bottom:8px;
+}
+.apikey-sub{font-size:14px;color:var(--gray-warm);line-height:1.6;margin-bottom:24px;}
+.apikey-input-wrap{position:relative;margin-bottom:12px;}
+#apikey-input{
+  width:100%;padding:14px 48px 14px 16px;
+  border:2px solid var(--gray-pale);border-radius:var(--radius-lg);
+  font-size:14px;font-family:'DM Sans',sans-serif;
+  color:var(--brown);background:var(--white);
+  outline:none;transition:border-color 0.2s;
+}
+#apikey-input:focus{border-color:var(--amber);}
+.apikey-toggle{
+  position:absolute;right:14px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;font-size:18px;
+  color:var(--gray-warm);padding:0;
+}
+#apikey-save{
+  width:100%;padding:14px;
+  background:var(--brown);color:var(--cream);
+  border:none;border-radius:var(--radius-lg);
+  font-size:15px;font-weight:600;cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+  transition:all 0.2s;margin-bottom:16px;
+}
+#apikey-save:hover{background:var(--brown-mid);}
+.apikey-hint{font-size:12px;color:var(--gray-warm);line-height:1.6;}
+.apikey-hint a{color:var(--amber);text-decoration:none;}
+.apikey-hint a:hover{text-decoration:underline;}
+.apikey-err{
+  font-size:13px;color:var(--red-chili);margin-bottom:10px;
+  display:none;
+}
+#apikey-saved-bar{
+  display:none;
+  align-items:center;gap:8px;
+  background:#f0fdf4;border:1px solid #bbf7d0;
+  border-radius:var(--radius);padding:8px 14px;
+  font-size:13px;color:#166534;margin-bottom:14px;
+}
+</style>
+</head>
+<body>
+
+<!-- API KEY BANNER -->
+<div id="api-key-banner" style="display:none">
+  <div class="apikey-card">
+    <div class="apikey-icon">🔑</div>
+    <div class="apikey-title">Enter Your API Key</div>
+    <div class="apikey-sub">MenuMate AI needs your Anthropic API key to read menus. Your key is saved only in this browser — never sent anywhere else.</div>
+    <div id="apikey-saved-bar">✓ Key saved! You're all set.</div>
+    <div class="apikey-err" id="apikey-err">Please enter a valid key starting with <strong>sk-ant-</strong></div>
+    <div class="apikey-input-wrap">
+      <input type="password" id="apikey-input" placeholder="sk-ant-api03-…" autocomplete="off" spellcheck="false">
+      <button class="apikey-toggle" onclick="toggleKeyVis()" title="Show/hide">👁</button>
+    </div>
+    <button id="apikey-save" onclick="saveApiKey()">Save & Continue →</button>
+    <div class="apikey-hint">
+      Get a free key at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> → API Keys → Create Key.<br>
+      Your key is only stored in your browser's memory.
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo" onclick="resetApp();return false;">
+    <div class="nav-logo-icon">🍽️</div>
+    <span class="nav-logo-text">MenuMate <span>AI</span></span>
+  </a>
+  <span class="nav-tagline">✦ Restaurant Websites in Minutes</span>
+</nav>
+
+<!-- HOME SCREEN -->
+<div id="home-screen">
+
+  <div class="hero-bg">
+    <div class="hero-border"></div>
+
+    <!-- Floating food bg -->
+    <div class="food-float" style="top:120px;left:5%;animation-delay:0s;">🍕</div>
+    <div class="food-float" style="top:160px;left:12%;animation-delay:1.2s;">☕</div>
+    <div class="food-float" style="top:130px;right:8%;animation-delay:0.5s;">🍜</div>
+    <div class="food-float" style="top:180px;right:16%;animation-delay:2s;">🥗</div>
+    <div class="food-float" style="top:240px;left:3%;animation-delay:1.8s;">🥐</div>
+    <div class="food-float" style="top:220px;right:4%;animation-delay:0.9s;">🍰</div>
+
+    <!-- Hero Illustration: Steam cups SVG -->
+    <div class="hero-illustration">
+      <svg class="steam-scene" viewBox="0 0 500 180" xmlns="http://www.w3.org/2000/svg" fill="none">
+        <!-- Table surface -->
+        <rect x="60" y="138" width="380" height="14" rx="7" fill="#6b4226" opacity="0.18"/>
+        <rect x="70" y="134" width="360" height="8" rx="4" fill="#c8860a" opacity="0.22"/>
+
+        <!-- Left small cup -->
+        <ellipse cx="148" cy="132" rx="28" ry="6" fill="#a0674a" opacity="0.25"/>
+        <path d="M122 110 Q122 132 148 132 Q174 132 174 110 Z" fill="#fdf6ec" stroke="#d4b07a" stroke-width="2"/>
+        <path d="M130 110 Q130 126 148 126 Q166 126 166 110" fill="#c8860a" opacity="0.15"/>
+        <!-- Cup handle -->
+        <path d="M174 116 Q185 116 185 123 Q185 130 174 130" stroke="#d4b07a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <!-- Saucer -->
+        <ellipse cx="148" cy="132" rx="30" ry="5" fill="#e8ddd0" stroke="#d4b07a" stroke-width="1"/>
+        <!-- Steam left cup -->
+        <path d="M140 100 Q136 91 140 84 Q144 77 140 70" stroke="#a0674a" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.5">
+          <animateTransform attributeName="transform" type="translate" values="0,0;0,-6;0,0" dur="2.2s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.5;0.1;0.5" dur="2.2s" repeatCount="indefinite"/>
+        </path>
+        <path d="M150 98 Q146 88 150 80 Q154 72 150 65" stroke="#a0674a" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.4">
+          <animateTransform attributeName="transform" type="translate" values="0,0;0,-8;0,0" dur="2.8s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.4;0.08;0.4" dur="2.8s" repeatCount="indefinite"/>
+        </path>
+        <path d="M160 102 Q156 93 160 86 Q164 79 160 72" stroke="#a0674a" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.45">
+          <animateTransform attributeName="transform" type="translate" values="0,0;0,-5;0,0" dur="2s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.45;0.1;0.45" dur="2s" repeatCount="indefinite"/>
+        </path>
+
+        <!-- Center big mug -->
+        <ellipse cx="250" cy="136" rx="36" ry="7" fill="#6b4226" opacity="0.2"/>
+        <rect x="214" y="98" width="72" height="38" rx="8" fill="#fdf6ec" stroke="#d4b07a" stroke-width="2.5"/>
+        <rect x="222" y="104" width="56" height="26" rx="5" fill="#c8860a" opacity="0.12"/>
+        <!-- Mug liquid -->
+        <ellipse cx="250" cy="102" rx="32" ry="6" fill="#8b4513" opacity="0.55"/>
+        <!-- Handle -->
+        <path d="M286 106 Q302 106 302 117 Q302 128 286 128" stroke="#d4b07a" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <!-- Mug steam -->
+        <path d="M238 88 Q233 76 238 66 Q243 56 238 46" stroke="#6b4226" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.45">
+          <animateTransform attributeName="transform" type="translate" values="0,0;0,-10;0,0" dur="3s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.45;0.05;0.45" dur="3s" repeatCount="indefinite"/>
+        </path>
+        <path d="M250 86 Q245 74 250 62 Q255 50 250 40" stroke="#6b4226" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.5">
+          <animateTransform attributeName="transform" type="translate" values="0,0;0,-12;0,0" dur="2.5s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.5;0.05;0.5" dur="2.5s" repeatCount="indefinite"/>
+        </path>
+        <path d="M262 88 Q257 76 262 66 Q267 56 262 46" stroke="#6b4226" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.4">
+          <animateTransform attributeName="transform" type="translate" values="0,0;0,-8;0,0" dur="3.5s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.4;0.05;0.4" dur="3.5s" repeatCount="indefinite"/>
+        </path>
+
+        <!-- Right cup (tea) -->
+        <ellipse cx="358" cy="132" rx="26" ry="5" fill="#a0674a" opacity="0.22"/>
+        <path d="M334 112 Q334 132 358 132 Q382 132 382 112 Z" fill="#fdf6ec" stroke="#d4b07a" stroke-width="2"/>
+        <path d="M342 112 Q342 126 358 126 Q374 126 374 112" fill="#e8a020" opacity="0.18"/>
+        <path d="M334 116 Q323 116 323 123 Q323 130 334 130" stroke="#d4b07a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <ellipse cx="358" cy="132" rx="28" ry="5" fill="#e8ddd0" stroke="#d4b07a" stroke-width="1"/>
+        <!-- Right cup steam -->
+        <path d="M350 102 Q346 93 350 85 Q354 77 350 68" stroke="#a0674a" stroke-width="1.6" stroke-linecap="round" fill="none" opacity="0.4">
+          <animateTransform attributeName="transform" type="translate" values="0,0;0,-7;0,0" dur="2.4s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.4;0.08;0.4" dur="2.4s" repeatCount="indefinite"/>
+        </path>
+        <path d="M362 104 Q358 95 362 87 Q366 79 362 71" stroke="#a0674a" stroke-width="1.6" stroke-linecap="round" fill="none" opacity="0.35">
+          <animateTransform attributeName="transform" type="translate" values="0,0;0,-9;0,0" dur="3.1s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.35;0.08;0.35" dur="3.1s" repeatCount="indefinite"/>
+        </path>
+
+        <!-- Menu card on table -->
+        <rect x="195" y="118" width="50" height="36" rx="4" fill="#fff" stroke="#d4b07a" stroke-width="1.5" transform="rotate(-8,220,136)"/>
+        <rect x="200" y="122" width="40" height="3" rx="1.5" fill="#c8860a" opacity="0.4" transform="rotate(-8,220,136)"/>
+        <rect x="200" y="128" width="32" height="2" rx="1" fill="#e8ddd0" transform="rotate(-8,220,136)"/>
+        <rect x="200" y="133" width="36" height="2" rx="1" fill="#e8ddd0" transform="rotate(-8,220,136)"/>
+        <rect x="200" y="138" width="28" height="2" rx="1" fill="#e8ddd0" transform="rotate(-8,220,136)"/>
+        <text x="204" y="125" font-family="serif" font-size="5" fill="#c8860a" font-style="italic" transform="rotate(-8,220,136)">MENU</text>
+      </svg>
+    </div>
+
+    <div class="eyebrow-tag fade-up">
+      <span class="dot"></span>
+      AI-Powered · No Code · Made for Restaurants
+    </div>
+
+    <h1 class="fade-up" style="transition-delay:0.08s">
+      Your menu,<br><em>instantly</em> a website.
+    </h1>
+
+    <p class="h1-sub fade-up" style="transition-delay:0.16s">
+      Upload your restaurant menu or visiting card and watch<br>MenuMate AI build your website in under 5 minutes.
+    </p>
+  </div>
+
+  <!-- UPLOAD -->
+  <div class="upload-wrapper fade-up" style="transition-delay:0.24s">
+    <div class="upload-box" id="drop-zone" onclick="document.getElementById('file-input').click()">
+      <div class="upload-plate">📋</div>
+      <div class="upload-title">Drop your menu here</div>
+      <div class="upload-sub">Drag & drop your menu image or PDF, or click below to browse.<br>We'll extract everything and build your site instantly.</div>
+      <button class="upload-btn" onclick="event.stopPropagation();document.getElementById('file-input').click()">
+        🍽️ Upload Menu or Card
+      </button>
+      <div class="file-hint">
+        <span class="file-hint-item">📷 JPG / PNG</span>
+        <span class="file-hint-item">📄 PDF</span>
+        <span class="file-hint-item">📦 Max 10MB</span>
+        <span class="file-hint-item">🔒 Private & Secure</span>
+      </div>
+    </div>
+    <input type="file" id="file-input" accept=".jpg,.jpeg,.png,.pdf" onchange="handleUpload(event)">
+  </div>
+
+  <!-- FEATURE PILLS -->
+  <div class="features-strip fade-up" style="transition-delay:0.32s">
+    <div class="feature-pill"><span class="ficon">🤖</span> AI Vision OCR</div>
+    <div class="feature-pill"><span class="ficon">⚡</span> Instant Preview</div>
+    <div class="feature-pill"><span class="ficon">✏️</span> Click to Edit</div>
+    <div class="feature-pill"><span class="ficon">🎨</span> 3 Themes</div>
+    <div class="feature-pill"><span class="ficon">💚</span> WhatsApp Button</div>
+    <div class="feature-pill"><span class="ficon">📥</span> Download HTML</div>
+    <div class="feature-pill"><span class="ficon">🖼️</span> Logo Upload</div>
+    <div class="feature-pill"><span class="ficon">📱</span> Mobile Ready</div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="how-section">
+    <div class="how-title">How it works</div>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="step-num">1</div>
+        <div class="step-title">Upload your menu</div>
+        <div class="step-desc">Photo, scan, or PDF — any format works fine</div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">2</div>
+        <div class="step-title">AI reads everything</div>
+        <div class="step-desc">Our AI extracts all items, prices, and contact details</div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">3</div>
+        <div class="step-title">Preview & edit</div>
+        <div class="step-desc">See your site live and click anything to fix it</div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">4</div>
+        <div class="step-title">Download or publish</div>
+        <div class="step-desc">Get your HTML file instantly or go live with one click</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /home-screen -->
+
+<!-- PROCESSING SCREEN -->
+<div id="processing-screen">
+  <div class="proc-icon-wrap">
+    <div class="proc-ring"></div>
+    <div class="proc-icon-inner">🍽️</div>
+  </div>
+  <div class="proc-title" id="proc-msg">Reading your menu…</div>
+  <div class="proc-sub">Our AI chef is preparing your website. Just a moment.</div>
+  <div class="proc-steps">
+    <div class="step-row" id="s1"><span class="sicon">📷</span> Scanning your file</div>
+    <div class="step-row" id="s2"><span class="sicon">🔍</span> Extracting text</div>
+    <div class="step-row" id="s3"><span class="sicon">🤖</span> AI structuring content</div>
+    <div class="step-row" id="s4"><span class="sicon">🎨</span> Building your website</div>
+  </div>
+</div>
+
+<!-- RESULT SCREEN -->
+<div id="result-screen">
+
+  <!-- Top bar -->
+  <div class="result-topbar">
+    <div class="rtb-left">
+      <span class="rtb-badge">✓ WEBSITE READY</span>
+      <span class="rtb-name" id="rtb-name">Your Restaurant</span>
+    </div>
+    <div class="rtb-actions">
+      <button class="btn-ghost-cream" onclick="resetApp()">← Start Over</button>
+      <button class="btn-amber" onclick="scrollToPublish()">🚀 Publish Site</button>
+    </div>
+  </div>
+
+  <!-- Theme switcher -->
+  <div class="theme-bar">
+    <span class="theme-label">Theme</span>
+    <div class="theme-opts">
+      <button class="theme-btn active" onclick="setTheme('warm',this)">
+        <div class="theme-swatch" style="background:#c8860a;"></div> Warm
+      </button>
+      <button class="theme-btn" onclick="setTheme('dark',this)">
+        <div class="theme-swatch" style="background:#1a1208;"></div> Dark
+      </button>
+      <button class="theme-btn" onclick="setTheme('light',this)">
+        <div class="theme-swatch" style="background:#f0f0f0;border:1px solid #ccc;"></div> Light
+      </button>
+    </div>
+    <div style="flex:1"></div>
+    <span class="edit-hint">✏️ Click any text in preview to edit</span>
+  </div>
+
+  <!-- Download bar -->
+  <div class="dl-bar">
+    <span class="dl-label">💾 Download your generated website as an HTML file — open it in any browser</span>
+    <button class="btn-dl" onclick="downloadSite()">📥 Download HTML</button>
+  </div>
+
+  <!-- Split layout -->
+  <div class="split-layout">
+
+    <!-- LEFT -->
+    <div class="split-left">
+      <div class="panel-label">📎 Uploaded File</div>
+      <div class="file-preview-box" id="preview-box"></div>
+
+      <!-- Logo upload -->
+      <div class="panel-label" style="margin-top:20px">🖼️ Add Your Logo (optional)</div>
+      <div class="logo-upload-area" id="logo-zone" onclick="document.getElementById('logo-file').click()">
+        <img id="logo-preview" src="" alt="logo">
+        <div class="logo-upload-txt" id="logo-txt">+ Tap to upload your logo</div>
+      </div>
+      <input type="file" id="logo-file" accept="image/*" onchange="handleLogoUpload(event)">
+
+      <!-- OCR text -->
+      <div class="ocr-box">
+        <div class="ocr-header">
+          <span class="ocr-label">Extracted Text</span>
+          <span class="ocr-badge">AI Processed</span>
+        </div>
+        <div id="ocr-text">Waiting for file…</div>
+      </div>
+    </div>
+
+    <!-- RIGHT: preview -->
+    <div class="split-right">
+      <div class="preview-wrap">
+        <div class="preview-label">🖥 Live Website Preview</div>
+        <div class="browser-frame">
+          <div class="browser-bar">
+            <div class="bdot r"></div>
+            <div class="bdot y"></div>
+            <div class="bdot g"></div>
+            <div class="burl" id="site-url">yourrestaurant.menumate.app</div>
+          </div>
+          <div id="generated-site" class="theme-warm"></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /split-layout -->
+
+  <!-- Publish -->
+  <div class="publish-zone" id="publish-section">
+    <div class="pub-title">🌐 Go Live Today</div>
+    <div class="pub-sub">Your website is cooked and ready to serve. Pick a plan to publish.</div>
+    <div class="pub-plans">
+      <div class="pub-card" onclick="toast('Free plan — publishing coming soon!')">
+        <div class="pcard-name">Free</div>
+        <div class="pcard-price">₹0 <span>/forever</span></div>
+        <div class="pcard-features">✓ menumate.app subdomain<br>✓ 1-page website<br>✓ Basic design</div>
+      </div>
+      <div class="pub-card featured" onclick="toast('Pro plan — payment integration coming soon!')">
+        <div class="pcard-name">⭐ Pro</div>
+        <div class="pcard-price">₹499 <span>/month</span></div>
+        <div class="pcard-features">✓ Custom domain<br>✓ WhatsApp ordering<br>✓ Analytics<br>✓ All themes</div>
+      </div>
+      <div class="pub-card" onclick="toast('Business plan — coming soon!')">
+        <div class="pcard-name">Business</div>
+        <div class="pcard-price">₹999 <span>/month</span></div>
+        <div class="pcard-features">✓ Everything in Pro<br>✓ Multiple branches<br>✓ Priority support<br>✓ Online orders</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /result-screen -->
+
+<div id="toast"></div>
+
+<script>
+const API_URL="https://purple-truth-6591.sanketrkm.workers.dev";
+let menuData=null;
+let logoDataUrl=null;
+let currentTheme='warm';
+let API_KEY='';
+
+// API Key banner logic
+function toggleKeyVis(){
+  const inp=document.getElementById('apikey-input');
+  inp.type=inp.type==='password'?'text':'password';
+}
+function saveApiKey(){
+  const val=document.getElementById('apikey-input').value.trim();
+  const err=document.getElementById('apikey-err');
+  if(!val.startsWith('sk-ant-')){err.style.display='block';return;}
+  err.style.display='none';
+  API_KEY=val;
+  const bar=document.getElementById('apikey-saved-bar');
+  bar.style.display='flex';
+  setTimeout(()=>{
+    document.getElementById('api-key-banner').style.display='none';
+  },700);
+}
+document.getElementById('apikey-input').addEventListener('keydown',e=>{if(e.key==='Enter')saveApiKey();});
+
+// Fade-up on scroll
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:0.08});
+document.querySelectorAll('.fade-up').forEach(el=>io.observe(el));
+
+// Drag & drop
+const dz=document.getElementById('drop-zone');
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag-over');});
+dz.addEventListener('dragleave',()=>dz.classList.remove('drag-over'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag-over');const f=e.dataTransfer.files[0];if(f)processFile(f);});
+
+function handleUpload(e){const f=e.target.files[0];if(f)processFile(f);}
+
+function processFile(file){
+  const valid=['image/jpeg','image/png','image/jpg','application/pdf'];
+  if(!valid.includes(file.type)){toast('❌ Please upload JPG, PNG, or PDF only.');return;}
+  if(file.size>10*1024*1024){toast('❌ File too large. Max 10MB.');return;}
+  startProcessing();
+  if(file.type==='application/pdf'){
+    showPDFPreview(file.name);
+    const r=new FileReader();
+    r.onload=e=>callAI(null,null,e.target.result.split(',')[1],file.name);
+    r.readAsDataURL(file);
+  } else {
+    const r=new FileReader();
+    r.onload=e=>{
+      showImgPreview(e.target.result,file.name);
+      callAI(e.target.result.split(',')[1],file.type,null,file.name);
+    };
+    r.readAsDataURL(file);
+  }
+}
+
+function showImgPreview(src,name){
+  document.getElementById('preview-box').innerHTML=`<img src="${src}" alt="${name}">`;
+}
+
+function showPDFPreview(name){
+  document.getElementById('preview-box').innerHTML=`<div class="pdf-preview"><div class="picon">📋</div><div class="pname">${name}</div><div style="font-size:12px;color:#8a7560;margin-top:6px;">PDF Document</div></div>`;
+}
+
+function startProcessing(){
+  document.getElementById('home-screen').style.display='none';
+  document.getElementById('processing-screen').style.display='flex';
+  const steps=['s1','s2','s3','s4'];
+  const msgs=['Reading your file…','Extracting all text…','AI structuring your menu…','Building your website…'];
+  let i=0;
+  const iv=setInterval(()=>{
+    if(i>0){document.getElementById(steps[i-1]).className='step-row done';}
+    if(i<steps.length){
+      document.getElementById(steps[i]).className='step-row active';
+      document.getElementById('proc-msg').textContent=msgs[i];
+      i++;
+    } else clearInterval(iv);
+  },1300);
+}
+
+async function callAI(imgBase64,mediaType,pdfBase64,filename){
+  const prompt=`You are a menu OCR and parser. Extract everything from this restaurant menu or visiting card and return ONLY a valid JSON object, no markdown, no explanation.
+
+JSON structure:
+{
+  "business_name": "Full restaurant name",
+  "tagline": "Tagline, slogan or cuisine type if visible, else empty string",
+  "address": "Full address if visible, else empty",
+  "phone": "Phone number if visible, else empty",
+  "email": "Email if visible, else empty",
+  "website": "Website if visible, else empty",
+  "hours": "Opening hours if visible, else empty",
+  "about": "Any about us text, description, or 1-line you can infer, else empty",
+  "categories": [
+    {
+      "name": "Category name like Starters, Main Course, Drinks, Desserts etc.",
+      "items": [
+        {"name": "Item name", "price": "Price with ₹ or currency symbol", "description": "Short description or empty string"}
+      ]
+    }
+  ],
+  "raw_text": "All text extracted verbatim from the image, line by line"
+}
+
+If no categories are visible, put items in a single category named 'Our Menu'. Always return valid JSON only.`;
+
+  try {
+    let content=[];
+    if(imgBase64){
+      content=[{type:'image',source:{type:'base64',media_type:mediaType,data:imgBase64}},{type:'text',text:prompt}];
+    } else {
+      content=[{type:'document',source:{type:'base64',media_type:'application/pdf',data:pdfBase64}},{type:'text',text:prompt}];
+    }
+
+    const res=await fetch(API_URL,{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content}]})
+    });
+
+    const data=await res.json();
+    const txt=data.content.map(c=>c.text||'').join('');
+    parseAndShow(txt);
+  } catch(err){
+    showErr('Could not connect to AI. Check your internet and try again.');
+    console.error(err);
+  }
+}
+
+function parseAndShow(raw){
+  try{
+    const clean=raw.replace(/```json|```/g,'').trim();
+    menuData=JSON.parse(clean);
+  } catch(e){
+    menuData={
+      business_name:'Your Restaurant',tagline:'Good Food, Great Times',
+      address:'',phone:'',email:'',website:'',hours:'',
+      about:'Welcome! We serve delicious food made with the finest ingredients.',
+      categories:[{name:'Our Menu',items:[{name:'Signature Dish',price:'₹299',description:'Ask our staff for today\'s special'}]}],
+      raw_text:raw.substring(0,600)
+    };
+  }
+
+  document.getElementById('ocr-text').textContent=menuData.raw_text||'Text extracted.';
+  const slug=(menuData.business_name||'restaurant').toLowerCase().replace(/[^a-z0-9]/g,'-').replace(/-+/g,'-');
+  document.getElementById('site-url').textContent=`${slug}.menumate.app`;
+  document.getElementById('rtb-name').textContent=menuData.business_name||'Your Restaurant';
+
+  renderSite();
+
+  setTimeout(()=>{
+    document.getElementById('processing-screen').style.display='none';
+    document.getElementById('result-screen').style.display='block';
+    window.scrollTo(0,0);
+  },600);
+}
+
+function renderSite(){
+  if(!menuData)return;
+  const d=menuData;
+  const gs=document.getElementById('generated-site');
+
+  // Contacts
+  const contactHtml=[
+    d.phone?`<div class="gs-contact-item">📞 ${d.phone}</div>`:'',
+    d.address?`<div class="gs-contact-item">📍 ${d.address}</div>`:'',
+    d.email?`<div class="gs-contact-item">✉️ ${d.email}</div>`:'',
+    d.hours?`<div class="gs-contact-item">🕐 ${d.hours}</div>`:'',
+  ].filter(Boolean).join('');
+
+  // WA button
+  const waPhone=(d.phone||'').replace(/[^0-9]/g,'');
+  const waBtn=waPhone?`<a class="gs-wa-btn" href="https://wa.me/${waPhone}?text=Hi%2C+I+want+to+place+an+order!" target="_blank">💬 Order on WhatsApp</a>`:'';
+
+  // Logo
+  const logoHtml=logoDataUrl?`<img class="gs-logo-img" src="${logoDataUrl}" alt="logo">`:'';
+
+  // Categories
+  const catsHtml=(d.categories||[]).map(cat=>{
+    if(!cat.items||!cat.items.length)return'';
+    const items=cat.items.map(it=>`
+      <div class="item-card">
+        <div class="item-name" contenteditable="true">${it.name||'Item'}</div>
+        ${it.description?`<div class="item-desc" contenteditable="true">${it.description}</div>`:''}
+        ${it.price?`<div class="item-price" contenteditable="true">${it.price}</div>`:''}
+      </div>`).join('');
+    return`<div style="margin-bottom:24px">
+      <div class="cat-title" contenteditable="true">${cat.name}</div>
+      <div class="items-grid">${items}</div>
+    </div>`;
+  }).join('');
+
+  gs.innerHTML=`
+    <div class="gs-hero">
+      ${logoHtml}
+      <div class="gs-name" contenteditable="true">${d.business_name||'Your Restaurant'}</div>
+      ${d.tagline?`<div class="gs-tagline" contenteditable="true">${d.tagline}</div>`:''}
+      ${contactHtml?`<div class="gs-contacts">${contactHtml}</div>`:''}
+      ${waBtn}
+    </div>
+    ${catsHtml?`<div class="gs-section"><div class="gs-sec-title">Our Menu</div>${catsHtml}</div>`:''}
+    ${d.about?`<div class="gs-section"><div class="gs-sec-title">About Us</div><div class="gs-about-box" contenteditable="true">${d.about}</div></div>`:''}
+    ${contactHtml?`<div class="gs-section"><div class="gs-sec-title">Find Us</div>
+      <div class="gs-about-box">
+        ${d.address?`<div style="margin-bottom:6px">📍 ${d.address}</div>`:''}
+        ${d.phone?`<div style="margin-bottom:6px">📞 ${d.phone}</div>`:''}
+        ${d.email?`<div style="margin-bottom:6px">✉️ ${d.email}</div>`:''}
+        ${d.hours?`<div>🕐 ${d.hours}</div>`:''}
+      </div></div>`:''}
+    <div class="gs-footer">© 2025 ${d.business_name||'Your Restaurant'} · Built with MenuMate AI</div>
+  `;
+
+  // Apply current theme
+  gs.className=`theme-${currentTheme}`;
+}
+
+function setTheme(t,btn){
+  currentTheme=t;
+  document.querySelectorAll('.theme-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('generated-site').className=`theme-${t}`;
+}
+
+function handleLogoUpload(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    logoDataUrl=ev.target.result;
+    const prev=document.getElementById('logo-preview');
+    prev.src=logoDataUrl;prev.style.display='block';
+    document.getElementById('logo-txt').textContent='Logo uploaded ✓';
+    document.getElementById('logo-zone').classList.add('has-logo');
+    renderSite();
+    toast('✓ Logo added to your website!');
+  };
+  r.readAsDataURL(file);
+}
+
+function downloadSite(){
+  if(!menuData){toast('❌ No site generated yet.');return;}
+  const siteEl=document.getElementById('generated-site');
+  const themeStyles=`
+    .theme-warm{--st-bg:#fdf6ec;--st-card:#fff;--st-hero-bg:#3d2b1f;--st-hero-txt:#fdf6ec;--st-accent:#c8860a;--st-txt:#3d2b1f;--st-txt2:#8a7560;--st-border:#e8ddd0;}
+    .theme-dark{--st-bg:#1a1208;--st-card:#2a1f14;--st-hero-bg:#0d0905;--st-hero-txt:#fdf6ec;--st-accent:#e8a020;--st-txt:#fdf6ec;--st-txt2:#a0926a;--st-border:#3d2b1f;}
+    .theme-light{--st-bg:#ffffff;--st-card:#f9f9f9;--st-hero-bg:#f0f0f0;--st-hero-txt:#1a1a1a;--st-accent:#c8860a;--st-txt:#1a1a1a;--st-txt2:#666;--st-border:#e0e0e0;}
+  `;
+  const html=`<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${menuData.business_name||'Restaurant Website'}</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Lora:ital,wght@0,400;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;}
+${themeStyles}
+.gs-hero{background:var(--st-hero-bg);padding:48px 24px 40px;text-align:center;border-bottom:3px solid var(--st-accent);}
+.gs-name{font-family:'Playfair Display',serif;font-size:36px;font-weight:900;color:var(--st-hero-txt);margin-bottom:6px;}
+.gs-tagline{font-family:'Lora',serif;font-size:15px;font-style:italic;color:rgba(253,246,236,0.7);margin-bottom:16px;}
+.gs-contacts{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;font-size:13px;color:rgba(253,246,236,0.65);margin-bottom:20px;}
+.gs-contact-item{display:flex;align-items:center;gap:4px;}
+.gs-wa-btn{display:inline-flex;align-items:center;gap:8px;background:#25D366;color:#fff;padding:11px 22px;border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;}
+.gs-logo-img{width:70px;height:70px;object-fit:contain;border-radius:12px;margin:0 auto 16px;display:block;}
+.gs-section{padding:32px 24px;background:var(--st-bg);border-top:1px solid var(--st-border);}
+.gs-sec-title{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--st-txt2);margin-bottom:20px;}
+.cat-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--st-txt);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--st-accent);display:inline-block;}
+.items-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;}
+@media(max-width:480px){.items-grid{grid-template-columns:1fr;}}
+.item-card{background:var(--st-card);border:1px solid var(--st-border);border-radius:10px;padding:14px;}
+.item-name{font-weight:600;font-size:14px;color:var(--st-txt);margin-bottom:3px;}
+.item-desc{font-size:12px;color:var(--st-txt2);margin-bottom:7px;line-height:1.4;}
+.item-price{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--st-accent);}
+.gs-about-box{background:var(--st-card);border:1px solid var(--st-border);border-radius:12px;padding:18px;font-size:14px;color:var(--st-txt2);line-height:1.7;}
+.gs-footer{background:var(--st-hero-bg);color:rgba(253,246,236,0.4);text-align:center;padding:20px;font-size:12px;}
+</style>
+</head>
+<body>
+<div class="theme-${currentTheme}">
+${siteEl.innerHTML}
+</div>
+</body>
+</html>`;
+
+  const blob=new Blob([html],{type:'text/html'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`${(menuData.business_name||'restaurant').toLowerCase().replace(/\s+/g,'-')}-website.html`;
+  a.click();
+  toast('✓ Website downloaded!');
+}
+
+function scrollToPublish(){
+  document.getElementById('publish-section').scrollIntoView({behavior:'smooth'});
+}
+
+function resetApp(){
+  document.getElementById('home-screen').style.display='block';
+  document.getElementById('result-screen').style.display='none';
+  document.getElementById('processing-screen').style.display='none';
+  document.getElementById('file-input').value='';
+  document.getElementById('logo-file').value='';
+  document.getElementById('logo-preview').style.display='none';
+  document.getElementById('logo-txt').textContent='+ Tap to upload your logo';
+  document.getElementById('logo-zone').classList.remove('has-logo');
+  logoDataUrl=null;menuData=null;
+  ['s1','s2','s3','s4'].forEach(id=>document.getElementById(id).className='step-row');
+  window.scrollTo(0,0);
+}
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+function showErr(msg){
+  document.getElementById('processing-screen').style.display='none';
+  document.getElementById('home-screen').style.display='block';
+  toast('❌ '+msg);
+}
+</script>
+</body>
+</html>
