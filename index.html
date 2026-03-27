@@ -961,7 +961,7 @@ h1 em{
 <body>
 
 <!-- API KEY BANNER -->
-<div id="api-key-banner">
+<div id="api-key-banner" style="display:none">
   <div class="apikey-card">
     <div class="apikey-icon">🔑</div>
     <div class="apikey-title">Enter Your API Key</div>
@@ -1281,7 +1281,7 @@ h1 em{
 <div id="toast"></div>
 
 <script>
-const API_URL="https://api.anthropic.com/v1/messages";
+const API_URL="https://purple-truth-6591.sanketrkm.workers.dev";
 let menuData=null;
 let logoDataUrl=null;
 let currentTheme='warm';
@@ -1399,10 +1399,7 @@ If no categories are visible, put items in a single category named 'Our Menu'. A
     const res=await fetch(API_URL,{
       method:'POST',
       headers:{
-        'Content-Type':'application/json',
-        'x-api-key':API_KEY,
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-iab':'true'
+        'Content-Type':'application/json'
       },
       body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content}]})
     });
